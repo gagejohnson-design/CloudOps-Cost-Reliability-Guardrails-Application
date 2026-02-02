@@ -1,15 +1,14 @@
-CloudOps Cost & Reliability Guardrails
-🚧 The Challenge
+# CloudOps Cost & Reliability Guardrails
+
+## 🚧 The Challenge
 
 As I started working more hands-on with AWS, I struggled to confidently understand changes in my cloud costs.
 
 Simple questions were surprisingly hard to answer:
 
-Why did my AWS bill increase this week?
-
-Which service caused the change?
-
-Was the increase expected or an anomaly?
+- Why did my AWS bill increase this week?
+- Which service caused the change?
+- Was the increase expected or an anomaly?
 
 AWS provides detailed cost data, but turning that data into clear, explainable insights often requires jumping between multiple tools and manual investigation. As someone newer to AWS, this made cost monitoring difficult to reason about and easy to overlook.
 
@@ -17,235 +16,204 @@ At the same time, I wanted a lightweight way to verify that a critical API was b
 
 This project was built to address those problems.
 
-✅ What This Project Does
+---
 
-CloudOps Cost & Reliability Guardrails is a deployable AWS application that provides automated cost and reliability monitoring with minimal configuration.
+## ✅ What This Project Does
+
+**CloudOps Cost & Reliability Guardrails** is a deployable AWS application that provides automated cost and reliability monitoring with minimal configuration.
 
 It focuses on:
 
-Clear, explainable signals
-
-Simple anomaly detection
-
-Persistent tracking over time
+- Clear, explainable signals
+- Simple anomaly detection
+- Persistent tracking over time
 
 Rather than advanced forecasting or real-time alerting, the system prioritizes clarity, confidence, and ease of adoption.
 
-🧩 Functional Scope (V1)
-Cost Monitoring
+---
 
-Daily AWS cost ingestion via Cost Explorer
+## 🧩 Functional Scope (V1)
 
-30-day rolling cost window by AWS service
+### Cost Monitoring
 
-Fixed-threshold anomaly detection
+- Daily AWS cost ingestion via Cost Explorer
+- 30-day rolling cost window by AWS service
+- Fixed-threshold anomaly detection
+- Automatic alert and recommendation generation
 
-Automatic alert and recommendation generation
+### Reliability Monitoring
 
-Reliability Monitoring
+- CloudWatch metric ingestion for a single API Gateway
+- Metrics collected:
+  - 5XX error count
+  - p95 latency
+- Rolling baseline anomaly detection
+- Reliability alerts with remediation guidance
 
-CloudWatch metric ingestion for a single API Gateway
+### Alerts & Recommendations
 
-Metrics collected:
+- Alerts are generated automatically
+- Recommendations are linked to alerts
+- Lifecycle tracking:
+  - Alerts: `open`, `acknowledged`, `resolved`
+  - Recommendations: `open`, `in_progress`, `done`, `dismissed`
+- All state is persisted for historical analysis
 
-5XX error count
+---
 
-p95 latency
+## 🏗 Architecture Overview
 
-Rolling baseline anomaly detection
+### Frontend
 
-Reliability alerts with remediation guidance
+- Static website hosted on Amazon S3
+- Served via CloudFront
+- HTML, CSS, and JavaScript
+- Authenticated via Cognito-issued JWTs
 
-Alerts & Recommendations
+### Authentication
 
-Alerts are generated automatically
+- Amazon Cognito User Pool
+- Hosted UI with email/password login
+- API Gateway JWT authorizer
 
-Recommendations are linked to alerts
+### Backend API
 
-Lifecycle tracking:
+- Amazon API Gateway
+- AWS Lambda (Python)
+- Stateless request handling
+- CRUD endpoints for alerts, recommendations, and summaries
 
-Alerts: open, acknowledged, resolved
+### Data Store
 
-Recommendations: open, in_progress, done, dismissed
+- Amazon RDS (PostgreSQL)
+- Single-instance deployment (V1)
+- Relational schema optimized for historical tracking
 
-All state is persisted for historical analysis
+### Background Jobs
 
-🏗 Architecture Overview
-Frontend
+- Amazon EventBridge scheduled jobs
+- Lambda functions for:
+  - Cost ingestion
+  - Reliability metric ingestion
+  - Anomaly detection
 
-Static website hosted on Amazon S3
+---
 
-Served via CloudFront
-
-HTML, CSS, and JavaScript
-
-Authenticated via Cognito-issued JWTs
-
-Authentication
-
-Amazon Cognito User Pool
-
-Hosted UI with email/password login
-
-API Gateway JWT authorizer
-
-Backend API
-
-Amazon API Gateway
-
-AWS Lambda (Python)
-
-Stateless request handling
-
-CRUD endpoints for alerts, recommendations, and summaries
-
-Data Store
-
-Amazon RDS (PostgreSQL)
-
-Single-instance deployment (V1)
-
-Relational schema optimized for historical tracking
-
-Background Jobs
-
-Amazon EventBridge scheduled jobs
-
-Lambda functions for:
-
-Cost ingestion
-
-Reliability metric ingestion
-
-Anomaly detection
-
-🗄 Data Model
+## 🗄 Data Model
 
 Core tables:
 
-projects
+- `projects`
+- `daily_costs`
+- `reliability_metrics`
+- `alerts`
+- `recommendations`
+- `events`
 
-daily_costs
-
-reliability_metrics
-
-alerts
-
-recommendations
-
-events
-
-All records are timestamped.
+All records are timestamped.  
 Alert and recommendation lifecycles are explicitly modeled and persisted.
 
-🚀 Deployment
-Deployment Method
+---
 
-AWS SAM (CloudFormation)
+## 🚀 Deployment
 
-Single stack deployment
+### Deployment Method
 
-Required Parameters
+- AWS SAM (CloudFormation)
+- Single-stack deployment
 
-Admin email
+### Required Parameters
 
-AWS region
+- Admin email
+- AWS region
+- API Gateway identifier to monitor
 
-API Gateway identifier to monitor
+### Optional
 
-Optional demo mode flag
+- Demo mode flag
 
-After Deployment
+### After Deployment
 
-Cognito Hosted UI is available for login
+- Cognito Hosted UI is available for login
+- Ingestion jobs start automatically
+- No manual configuration required
 
-Ingestion jobs start automatically
+---
 
-No manual configuration required
+## 📁 Repository Structure
 
-📁 Repository Structure
+```text
 cloudops-guardrails/
 ├── template.yaml
 ├── samconfig.toml
 ├── README.md
 ├── frontend/
 ├── backend/
-│ ├── api/
-│ ├── ingestion/
-│ └── common/
+│   ├── api/
+│   ├── ingestion/
+│   └── common/
 ├── sql/
-│ ├── schema.sql
-│ └── seed.sql
+│   ├── schema.sql
+│   └── seed.sql
 └── docs/
+```
 
-🚫 Out of Scope (V1)
+---
+
+## 🚫 Out of Scope (V1)
 
 The following are intentionally excluded from V1:
 
-Multi-account support
+- Multi-account support
+- Advanced forecasting or ML
+- Slack or PagerDuty notifications
+- SLO or error budget calculations
+- Real-time streaming pipelines
+- Kubernetes or container orchestration
+- Complex role-based access control
 
-Advanced forecasting or ML
+---
 
-Slack or PagerDuty notifications
+## 🛣 Roadmap
 
-SLO or error budget calculations
+### V1 — Foundational Platform
 
-Real-time streaming pipelines
+- Cost and reliability guardrails
+- Stateful alert and recommendation tracking
+- Fully deployable AWS stack
 
-Kubernetes or container orchestration
+### V2 — Operational Enhancements
 
-Complex role-based access control
+- Improved anomaly explainability
+- Notifications
+- Job failure visibility
+- Audit and history UI
 
-🛣 Roadmap
-V1 — Foundational Platform
+### V3 — Advanced Signals
 
-Cost and reliability guardrails
+- SLOs and error budgets
+- Cross-signal correlation
+- Unit cost metrics
+- Multi-project and multi-account support
 
-Stateful alert and recommendation tracking
+---
 
-Fully deployable AWS stack
-
-V2 — Operational Enhancements
-
-Improved anomaly explainability
-
-Notifications
-
-Job failure visibility
-
-Audit and history UI
-
-V3 — Advanced Signals
-
-SLOs and error budgets
-
-Cross-signal correlation
-
-Unit cost metrics
-
-Multi-project and multi-account support
-
-✅ Definition of Done (V1)
+## ✅ Definition of Done (V1)
 
 V1 is complete when:
 
-The stack deploys successfully via CloudFormation
+- The stack deploys successfully via CloudFormation
+- Authentication works end-to-end
+- Cost data ingests correctly
+- Reliability metrics ingest correctly
+- Alerts are generated
+- Recommendations are actionable
+- The UI reflects persisted data
+- Architecture and design are documented
 
-Authentication works end-to-end
+---
 
-Cost data ingests correctly
-
-Reliability metrics ingest correctly
-
-Alerts are generated
-
-Recommendations are actionable
-
-The UI reflects persisted data
-
-Architecture and design are documented
-
-🎯 Why This Exists
+## 🎯 Why This Exists
 
 This project reflects a common real-world challenge: gaining confidence and visibility into AWS costs and reliability signals without building a full enterprise platform.
 
