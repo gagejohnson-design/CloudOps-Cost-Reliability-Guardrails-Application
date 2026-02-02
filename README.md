@@ -182,19 +182,23 @@ The following are intentionally excluded from V1:
 - Stateful alert and recommendation tracking
 - Fully deployable AWS stack
 
-### V2 — Operational Enhancements
+### V1.1 — Operational Enhancements
 
 - Improved anomaly explainability
 - Notifications
 - Job failure visibility
 - Audit and history UI
 
-### V3 — Advanced Signals
+### V1.2 — Advanced Signals
 
 - SLOs and error budgets
 - Cross-signal correlation
 - Unit cost metrics
 - Multi-project and multi-account support
+
+## V2 - Security Functionality
+
+- Security focus application addition with alerts for Discovered Security Gaps from GuardDuty, SecurityHub, etc.
 
 ---
 
