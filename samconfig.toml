@@ -1,0 +1,13 @@
+version = 0.1
+
+[default.deploy.parameters]
+stack_name = "cloudops"
+resolve_s3 = true
+s3_prefix = "cloudops"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+parameter_overrides = "AdminEmail=\"gagejohnson117@gmail.com\" MonitoredApiGatewayId=\"demo\" DemoMode=\"true\" DbName=\"cloudops\" DbInstanceClass=\"db.t4g.micro\" DbAllocatedStorage=\"20\" EnableBillingAlarm=\"false\" BillingAlarmThreshold=\"60\""
+image_repositories = []
+
+[default.global.parameters]
+region = "us-east-2"
