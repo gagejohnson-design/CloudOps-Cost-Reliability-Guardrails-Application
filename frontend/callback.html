@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Auth Callback • CloudOps Guardrails</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <div class="card">
+        <h1>Signing you in…</h1>
+        <div class="small" id="status">Processing OAuth callback.</div>
+        <div class="small" style="margin-top: 12px">
+          If this hangs, your <span class="code">redirectUri</span> or Cognito
+          domain/client ID is wrong.
+        </div>
+      </div>
+    </main>
+
+    <script src="./config.js"></script>
+    <script src="./app.js"></script>
+    <script>
+      window.CloudOpsApp.handleCallback().catch((e) => {
+        document.getElementById("status").textContent =
+          "Login failed: " + (e?.message || String(e));
+      });
+    </script>
+  </body>
+</html>

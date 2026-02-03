@@ -1,0 +1,57 @@
+<!-- frontend/index.html -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>CloudOps Guardrails</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="nav">
+      <div class="nav-inner">
+        <div class="brand">
+          <div class="title">CloudOps Cost & Reliability Guardrails</div>
+          <div class="sub">
+            V1 • Cost spikes + API reliability • Alerts + recommendations
+          </div>
+        </div>
+
+        <div class="nav-links" id="navLinks"></div>
+
+        <div style="display: flex; gap: 10px; align-items: center">
+          <button class="btn secondary" id="btnLogin">Login</button>
+          <button class="btn secondary" id="btnLogout">Logout</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container">
+      <div class="card">
+        <h1 id="pageTitle">Dashboard</h1>
+        <div class="small" id="pageSubtitle">
+          This is the Phase 1 UI shell: fake data + real auth flow. Backend
+          wiring comes in Phase 2.
+        </div>
+        <div class="small" style="margin-top: 10px">
+          Status:
+          <span class="badge" id="authBadge"
+            ><span>●</span><span id="authText">Not logged in</span></span
+          >
+        </div>
+      </div>
+
+      <section class="grid" id="pageContent"></section>
+
+      <div class="footer">
+        <div>
+          Tip: Once deployed, use the stack output values to fill
+          <span class="code">frontend/config.js</span>.
+        </div>
+      </div>
+    </main>
+
+    <script src="./config.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>

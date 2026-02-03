@@ -428,6 +428,54 @@ Resources:
   ############################################################
   # Lambda (API) - VPC-attached with least privilege
   ############################################################
+  
+    FrontendDeployerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "${AWS::StackName}-FrontendDeployer"
+      CodeUri: .
+      Handler: backend/deployer/app.handler
+      Runtime: python3.12
+      Timeout: 120
+      MemorySize: 256
+      Policies:
+        - Statement:
+            - Effect: Allow
+              Action:
+                - s3:PutObject
+                - s3:DeleteObject
+                - s3:ListBucket
+              Resource:
+                - !GetAtt FrontendBucket.Arn
+                - !Sub "${FrontendBucket.Arn}/*"
+            - Effect: Allow
+              Action:
+                - cloudfront:CreateInvalidation
+              Resource: "*"
+            - Effect: Allow
+              Action:
+                - sts:GetCallerIdentity
+              Resource: "*"
+
+  FrontendDeployCustomResource:
+    Type: Custom::FrontendDeploy
+    DependsOn:
+      - CloudFrontDistribution
+      - FrontendBucketPolicy
+      - UserPoolDomain
+      - UserPoolClient
+      - RestApi
+    Properties:
+      ServiceToken: !GetAtt FrontendDeployerFunction.Arn
+      FrontendBucketName: !Ref FrontendBucket
+      CloudFrontDistributionId: !Ref CloudFrontDistribution
+      CloudFrontDomainName: !GetAtt CloudFrontDistribution.DomainName
+      CognitoDomainPrefix: !Ref UserPoolDomain
+      UserPoolClientId: !Ref UserPoolClient
+      RestApiId: !Ref RestApi
+      Region: !Ref "AWS::Region"
+      StageName: "Prod"
+
   ApiFunctionLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
@@ -555,3 +603,21 @@ Outputs:
   PrivateSubnetIds:
     Description: Private subnet IDs (comma-separated)
     Value: !Sub "${PrivateSubnetA},${PrivateSubnetB}"
+
+  Outputs:
+  FrontendBucketName:
+    Description: S3 bucket for frontend assets
+    Value: !Ref FrontendBucket
+
+  CloudFrontDistributionId:
+    Description: CloudFront distribution id
+    Value: !Ref CloudFrontDistribution
+
+  FrontendBucketName:
+   Description: S3 bucket for frontend assets
+   Value: !Ref FrontendBucket
+
+  CloudFrontDistributionId:
+    Description: CloudFront distribution id
+    Value: !Ref CloudFrontDistribution
+
