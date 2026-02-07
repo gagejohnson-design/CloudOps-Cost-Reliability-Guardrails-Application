@@ -428,8 +428,8 @@ Resources:
   ############################################################
   # Lambda (API) - VPC-attached with least privilege
   ############################################################
-  
-    FrontendDeployerFunction:
+
+  FrontendDeployerFunction:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: !Sub "${AWS::StackName}-FrontendDeployer"
@@ -456,7 +456,7 @@ Resources:
               Action:
                 - sts:GetCallerIdentity
               Resource: "*"
-
+       
   FrontendDeployCustomResource:
     Type: Custom::FrontendDeploy
     DependsOn:
