@@ -1,5 +1,7 @@
 # CloudOps Cost & Reliability Guardrails
 
+WIP Application with AI-Assisted Coding to build a boilerplate application & understand the end-to-end development process. **All architecture, functionality & cloud resource decisions related to the design & deployment of this application are done by me.**
+
 ## 🚧 The Challenge
 
 As I started working more hands-on with AWS, I struggled to confidently understand changes in my cloud costs.
